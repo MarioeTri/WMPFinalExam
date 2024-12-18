@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextField(
+                TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 16),
-                TextField(
+                TextFormField(
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
@@ -58,25 +58,21 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 24),
-                AnimatedContainer(
-                  duration: Duration(seconds: 1),
-                  curve: Curves.easeInOut,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 40.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                ElevatedButton(
+                  onPressed: _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 40.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    onPressed: _login,
-                    child: Text('Login', style: TextStyle(fontSize: 18, color: Colors.white)),
                   ),
+                  child: Text('Login', style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
                 SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/register'); // Navigate to Register page
+                    Navigator.pushNamed(context, '/register');
                   },
                   child: Text('Don\'t have an account? Register here', style: TextStyle(color: Colors.teal)),
                 ),

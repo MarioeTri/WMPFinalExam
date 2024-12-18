@@ -12,11 +12,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Map<String, dynamic>> subjects = [
-    {'name': 'Mathematics', 'credits': 6},
-    {'name': 'Physics', 'credits': 8},
-    {'name': 'Computer Science', 'credits': 6},
-    {'name': 'History', 'credits': 4},
-    {'name': 'DSA', 'credits': 10},
+    {'name': 'Natural Language Processing', 'credits': 6},
+    {'name': 'Image Processing And Recognition', 'credits': 8},
+    {'name': 'Intelligent Robotic Science', 'credits': 10},
+    {'name': 'Computer Vision', 'credits': 6},
+    {'name': 'Deep Learning', 'credits': 12},
+    {'name': 'Programming Language', 'credits': 10},
   ];
 
   int totalCredits = 0;
@@ -27,7 +28,6 @@ class _HomePageState extends State<HomePage> {
     _loadTotalCredits();
   }
 
-  // Load total credits from the database to show the current enrollment
   Future<void> _loadTotalCredits() async {
     List<Map<String, dynamic>> enrollments = await _getEnrollments();
     int credits = enrollments.fold<int>(0, (sum, enrollment) {
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.teal, Colors.blueAccent],
+            colors: [Colors.teal.shade700, Colors.blueAccent],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -74,76 +74,136 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Text(
-                  'User ID: ${widget.userId}',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 40),
-              Center(
-                child: AnimatedContainer(
-                  duration: Duration(seconds: 1),
-                  curve: Curves.easeInOut,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.teal.withOpacity(0.6),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 40.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 5,
-                    ),
-                    onPressed: () => _showCatalog('Enroll'),
-                    child: Text('Enroll Now', style: TextStyle(fontSize: 18, color: Colors.white)),
-                  ),
-                ),
-              ),
+              _buildHeader(),
+              SizedBox(height: 30),
+              _buildEnrollmentOptions(),
               SizedBox(height: 20),
-              Center(
-                child: AnimatedContainer(
-                  duration: Duration(seconds: 1),
-                  curve: Curves.easeInOut,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orangeAccent.withOpacity(0.6),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orangeAccent,
-                      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 40.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 5,
-                    ),
-                    onPressed: () => _showCatalog('Enrolled Subjects'),
-                    child: Text('View Enrolled Subjects', style: TextStyle(fontSize: 18, color: Colors.white)),
-                  ),
-                ),
-              ),
+              _buildSubjectGrid(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Header section with welcome text and dynamic user ID display
+  Widget _buildHeader() {
+    return Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      color: Colors.teal.shade300,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              'Welcome, Student!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Your ID: ${widget.userId}',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white70,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Enrollment options buttons (Enroll Now, View Enrolled Subjects)
+  Widget _buildEnrollmentOptions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildActionButton('Enroll Now', Colors.teal, Icons.add, () => _showCatalog('Enroll')),
+        _buildActionButton('View Enrolled', Colors.orangeAccent, Icons.book, () => _showCatalog('Enrolled Subjects')),
+      ],
+    );
+  }
+
+  // Custom button with dynamic design and action
+  Widget _buildActionButton(String label, Color color, IconData icon, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          color: color,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: Colors.white),
+                SizedBox(width: 10),
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Subject Grid section for showing subjects
+  Widget _buildSubjectGrid() {
+    return Expanded(
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+        ),
+        itemCount: subjects.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () => _enroll(subjects[index]['name'], subjects[index]['credits']),
+            child: Card(
+              elevation: 6,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.school, size: 40, color: Colors.teal),
+                    SizedBox(height: 10),
+                    Text(
+                      subjects[index]['name'],
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      'Credits: ${subjects[index]['credits']}',
+                      style: TextStyle(fontSize: 14, color: Colors.teal.shade600),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -163,6 +223,7 @@ class _HomePageState extends State<HomePage> {
           return AlertDialog(
             title: Text('Select Subjects'),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: subjects.map((subject) {
                 return ListTile(
                   title: Text(subject['name']),
@@ -182,6 +243,7 @@ class _HomePageState extends State<HomePage> {
           return AlertDialog(
             title: Text('Enrolled Subjects'),
             content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: enrollments.map((enrollment) {
                 return ListTile(
                   title: Text(enrollment['subject']),
